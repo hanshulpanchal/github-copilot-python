@@ -10,13 +10,12 @@ let gameCompleted = false;
 
 function getCurrentBoard() {
   const inputs = document.getElementById('sudoku-board').getElementsByTagName('input');
-  const board = [];
-  for (let i = 0; i < SIZE; i++) {
-    board[i] = [];
-    for (let j = 0; j < SIZE; j++) {
-      const value = inputs[i * SIZE + j].value;
-      board[i][j] = value ? parseInt(value, 10) : 0;
-    }
+  const board = Array.from({length: SIZE}, () => Array(SIZE).fill(0));
+  for (const input of inputs) {
+    const row = parseInt(input.dataset.row, 10);
+    const column = parseInt(input.dataset.col, 10);
+    const value = input.value;
+    board[row][column] = value ? parseInt(value, 10) : 0;
   }
   return board;
 }
@@ -190,13 +189,13 @@ async function checkSolution() {
     return;
   }
   const incorrect = new Set(data.incorrect.map(x => x[0]*SIZE + x[1]));
-  for (let idx = 0; idx < inputs.length; idx++) {
-    const inp = inputs[idx];
+  for (const inp of inputs) {
+    const row = parseInt(inp.dataset.row, 10);
+    const column = parseInt(inp.dataset.col, 10);
+    const cellIndex = row * SIZE + column;
     if (inp.disabled) continue;
-    inp.classList.remove('incorrect');
-    if (incorrect.has(idx)) {
-      inp.classList.add('incorrect');
-    }
+    const shouldHighlight = board[row][column] === 0 || incorrect.has(cellIndex);
+    inp.classList.toggle('incorrect', shouldHighlight);
   }
   const boardIsComplete = board.every((row) => row.every((value) => value !== 0));
   if (incorrect.size === 0 && boardIsComplete) {
@@ -204,8 +203,8 @@ async function checkSolution() {
     msg.style.color = 'var(--message-success)';
     msg.innerText = 'Congratulations! You solved it!';
   } else if (incorrect.size === 0) {
-    msg.style.color = 'var(--message-neutral)';
-    msg.innerText = 'No incorrect entries found yet.';
+    msg.style.color = 'var(--message-error)';
+    msg.innerText = 'Some cells are incorrect.';
   } else {
     msg.style.color = 'var(--message-error)';
     msg.innerText = 'Some cells are incorrect.';

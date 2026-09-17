@@ -30,3 +30,5 @@ def test_stylesheet_keeps_theme_and_mobile_board_rules():
     assert '.sudoku-cell.prefilled' in styles
     assert '.sudoku-cell.hinted' in styles
     assert '.sudoku-cell.invalid' in styles
+    assert '#sudoku-board .sudoku-cell.incorrect' in styles
+    assert 'outline: 2px solid var(--invalid-border)' in styles

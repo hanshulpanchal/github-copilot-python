@@ -141,6 +141,12 @@ h1 {
     background: var(--incorrect-bg);
 }
 
+#sudoku-board .sudoku-cell.incorrect {
+    background: var(--incorrect-bg);
+    outline: 2px solid var(--invalid-border);
+    outline-offset: -2px;
+}
+
 .sudoku-cell.invalid {
     background: var(--invalid-bg);
     border: 2px solid var(--invalid-border);
